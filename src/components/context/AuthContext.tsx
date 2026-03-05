@@ -4,6 +4,7 @@ import { authClient } from "../../lib/auth";
 
 interface AuthContextType {
     user: User | null;
+    isLoading: boolean;
 }
 const AuthContext = createContext<AuthContextType | null>(null)
 
