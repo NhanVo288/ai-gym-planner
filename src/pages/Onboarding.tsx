@@ -1,11 +1,12 @@
 import { RedirectToSignIn, SignedIn } from "@neondatabase/neon-js/auth/react";
-import { useAuth } from "../components/context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { Card } from "../components/ui/Card";
 import { Select } from "../components/ui/Select";
 import { useState } from "react";
 import { Textarea } from "../components/ui/Textarea";
 import { Button } from "../components/ui/Button";
 import { ArrowRight } from "lucide-react";
+import type { UserProfile } from "../types";
 
 const goalOptions = [
   {
@@ -105,12 +106,12 @@ const splitOptions = [
   },
 ];
 export default function Onboarding() {
-  const { user } = useAuth();
+  const { user, saveProfile } = useAuth();
   const [formData, setFormData] = useState({
     goal: "gain_muscle",
     experience: "intermediate",
-    daysPerWeek: 4,
-    sessionLength: 60,
+    daysPerWeek: "4",
+    sessionLength: "60",
     equipment: "full_gym",
     injuries: "",
     preferredSplit: "upper_lower",
@@ -118,9 +119,18 @@ export default function Onboarding() {
   function updateForm(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
-  async function handleQuestion(e:React.SubmitEvent) {
+  async function handleQuestion(e: React.SubmitEvent) {
     e.preventDefault();
-    
+    const profile: Omit<UserProfile, "userId" | "updatedAt"> = {
+      goal: formData.goal as UserProfile["goal"],
+      experience: formData.experience as UserProfile["experience"],
+      daysPerWeek: parseInt(formData.daysPerWeek),
+      sessionLength: parseInt(formData.sessionLength),
+      equipment: formData.equipment as UserProfile["equipment"],
+      injuries: formData.injuries || undefined,
+      preferredSplit: formData.preferredSplit as UserProfile["preferredSplit"],
+    };
+    saveProfile(profile);
   }
   if (!user) {
     return <RedirectToSignIn />;
@@ -137,7 +147,7 @@ export default function Onboarding() {
             <p className="text-[var(--color-muted)] mb-6">
               Giúp chúng tôi tạo ra giáo án tập luyện phù hợp nhất cho bạn
             </p>
-            <form className="space-y-5">
+            <form onSubmit={handleQuestion} className="space-y-5">
               <Select
                 id="goal"
                 label="Mục tiêu chính của bạn là gì?"
