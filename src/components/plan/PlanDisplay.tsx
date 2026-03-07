@@ -1,4 +1,4 @@
-import { Dumbbell, Info, Timer, Zap, ChevronRight } from "lucide-react";
+import {  Info, Timer, Zap,  } from "lucide-react";
 import type { DaySchedule, Exercise } from "../../types";
 import { Card } from "../ui/Card";
 
