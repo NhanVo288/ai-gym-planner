@@ -101,7 +101,7 @@ function DayCard({ schedule }: { schedule: DaySchedule }) {
           <thead>
             <tr className="bg-[var(--color-muted)]/5 text-[var(--color-muted)] text-[10px] uppercase font-black">
               <th className="text-left py-3 px-6">Bài tập</th>
-              <th className="py-3 px-4 text-center">Khối lượng</th>
+              <th className="py-3 px-4 text-center">Hiệp x Lần</th>
               <th className="py-3 px-4 text-center">Nghỉ</th>
               <th className="py-3 px-6 text-center">Cường độ</th>
             </tr>
