@@ -31,18 +31,32 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function loadUser() {
       try {
-        const res = await authClient.getSession();
-        if (res && res.data?.user) {
-          setNeonUser(res.data.user);
+        const result = await authClient.getSession();
+        if (result && result.data?.user) {
+          setNeonUser(result.data.user);
         } else {
           setNeonUser(null);
         }
-      } catch (error) {
+      } catch (err) {
         setNeonUser(null);
+      } finally {
+        setIsLoading(false);
       }
     }
+
     loadUser();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (neonUser?.id) {
+        refreshData();
+      } else {
+        setPlan(null);
+      }
+      setIsLoading(false);
+    }
+  }, [neonUser?.id, isLoading]);
   const refreshData = useCallback(async () => {
     if (!neonUser || isRefreshingRef.current) return;
     isRefreshingRef.current = true;
@@ -64,7 +78,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       isRefreshingRef.current = false;
     }
-  }, [neonUser.id]);
+  }, [neonUser?.id]);
   async function saveProfile(
     profileData: Omit<UserProfile, "userId" | "updatedAt">,
   ) {
@@ -72,14 +86,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("User must be authenticated to save profile");
     }
     await api.saveProfile(neonUser.id, profileData);
-    await refreshData()
+    await refreshData();
   }
   async function generatePlan() {
     if (!neonUser) {
       throw new Error("User must be authenticated to save profile");
     }
     await api.generatePlan(neonUser.id);
-    await refreshData()
+    await refreshData();
   }
   return (
     <AuthContext.Provider

@@ -5,7 +5,16 @@ import { Select } from "../components/ui/Select";
 import { useState } from "react";
 import { Textarea } from "../components/ui/Textarea";
 import { Button } from "../components/ui/Button";
-import { ArrowRight, Loader2 } from "lucide-react";
+import {
+  ArrowRight,
+  Dumbbell,
+  History,
+  Calendar,
+  Clock,
+  Activity,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import type { UserProfile } from "../types";
 import { useNavigate } from "react-router-dom";
 
@@ -110,7 +119,7 @@ export default function Onboarding() {
   const { user, saveProfile, generatePlan } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     goal: "gain_muscle",
     experience: "intermediate",
@@ -137,12 +146,10 @@ export default function Onboarding() {
     try {
       await saveProfile(profile);
       setIsGenerating(true);
-      await generatePlan()
-      navigate("/profile")
+      await generatePlan();
+      navigate("/profile");
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to save profile",
-      );
+      setError(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
       setIsGenerating(false);
     }
@@ -153,42 +160,73 @@ export default function Onboarding() {
 
   return (
     <SignedIn>
-      <div className="min-h-screen pt-24 pb-12 px-6">
-        <div className="max-w-xl mx-auto">
+      <div className="min-h-screen pt-20 pb-12 px-4 bg-[var(--color-background)]">
+        <div className="max-w-2xl mx-auto">
           {!isGenerating ? (
-            <Card variant="bordered">
-              <h1 className="text-2xl font-bold mb-2">
-                Hãy cho chúng tôi biết về bạn
-              </h1>
-              <p className="text-[var(--color-muted)] mb-6">
-                Giúp chúng tôi tạo ra giáo án tập luyện phù hợp nhất cho bạn
-              </p>
-              <form onSubmit={handleQuestion} className="space-y-5">
-                <Select
-                  id="goal"
-                  label="Mục tiêu chính của bạn là gì?"
-                  options={goalOptions}
-                  value={formData.goal}
-                  onChange={(e) => updateForm("goal", e.target.value)}
-                />
-                <Select
-                  id="experience"
-                  label="Kinh nghiệm luyện tập"
-                  options={experienceOptions}
-                  value={formData.experience}
-                  onChange={(e) => updateForm("experience", e.target.value)}
-                />
-                <div className="grid grid-cols-2 gap-4">
+            <Card
+              variant="bordered"
+              className="shadow-lg border-[var(--color-border)] bg-card p-6 sm:p-8"
+            >
+              <div className="mb-8 border-b border-[var(--color-border)] pb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 bg-[var(--color-accent)]/10 rounded-lg">
+                    <Dumbbell className="w-6 h-6 text-[var(--color-accent)]" />
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                    Thiết lập mục tiêu
+                  </h1>
+                </div>
+                <p className="text-[var(--color-muted)] text-sm sm:text-base">
+                  Trả lời vài câu hỏi để AI thiết kế lộ trình tập luyện cá nhân
+                  hóa dành riêng cho bạn.
+                </p>
+              </div>
+
+              <form onSubmit={handleQuestion} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <Select
+                    id="goal"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <Activity className="w-4 h-4" /> Mục tiêu chính
+                      </span>
+                    }
+                    options={goalOptions}
+                    value={formData.goal}
+                    onChange={(e) => updateForm("goal", e.target.value)}
+                  />
+                  <Select
+                    id="experience"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <History className="w-4 h-4" /> Kinh nghiệm
+                      </span>
+                    }
+                    options={experienceOptions}
+                    value={formData.experience}
+                    onChange={(e) => updateForm("experience", e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-6 p-4 bg-[var(--color-muted)]/5 rounded-xl border border-[var(--color-border)]/50">
                   <Select
                     id="daysPerWeek"
-                    label="Số ngày tập mỗi tuần"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4" /> Số buổi/tuần
+                      </span>
+                    }
                     options={daysOptions}
                     value={formData.daysPerWeek}
                     onChange={(e) => updateForm("daysPerWeek", e.target.value)}
                   />
                   <Select
                     id="sessionLength"
-                    label="Thời lượng buổi tập"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <Clock className="w-4 h-4" /> Thời lượng
+                      </span>
+                    }
                     options={sessionOptions}
                     value={formData.sessionLength}
                     onChange={(e) =>
@@ -196,42 +234,66 @@ export default function Onboarding() {
                     }
                   />
                 </div>
-                <Select
-                  id="equipment"
-                  label="Thiết bị tập luyện có sẵn"
-                  options={equipmentOptions}
-                  value={formData.equipment}
-                  onChange={(e) => updateForm("equipment", e.target.value)}
-                />
 
-                <Select
-                  id="preferredSplit"
-                  label="Kiểu chia lịch tập mong muốn"
-                  options={splitOptions}
-                  value={formData.preferredSplit}
-                  onChange={(e) => updateForm("preferredSplit", e.target.value)}
-                />
+                <div className="space-y-6">
+                  <Select
+                    id="equipment"
+                    label="Thiết bị tập luyện có sẵn"
+                    options={equipmentOptions}
+                    value={formData.equipment}
+                    onChange={(e) => updateForm("equipment", e.target.value)}
+                  />
+                  <Select
+                    id="preferredSplit"
+                    label="Kiểu chia lịch tập mong muốn"
+                    options={splitOptions}
+                    value={formData.preferredSplit}
+                    onChange={(e) =>
+                      updateForm("preferredSplit", e.target.value)
+                    }
+                  />
+                  <Textarea
+                    id="injuries"
+                    label={
+                      <span className="flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4" /> Chấn thương / Hạn
+                        chế (nếu có)
+                      </span>
+                    }
+                    placeholder="Ví dụ: Đau lưng dưới, hạn chế xoay khớp vai..."
+                    className="resize-none focus:ring-[var(--color-accent)]"
+                    rows={3}
+                    value={formData.injuries}
+                    onChange={(e) => updateForm("injuries", e.target.value)}
+                  />
+                </div>
 
-                <Textarea
-                  id="injuries"
-                  label="Bạn có chấn thương hoặc hạn chế vận động nào không? (không bắt buộc)"
-                  placeholder="Ví dụ: đau lưng dưới, chấn thương vai..."
-                  rows={3}
-                  value={formData.injuries}
-                  onChange={(e) => updateForm("injuries", e.target.value)}
-                />
-                <div className="flex gap-3 pt-2">
-                  <Button type="submit" className="flex-1 gap-2">
-                    Tạo lịch tập <ArrowRight className="w-4 h-4" />
+                <div className="pt-4">
+                  <Button
+                    type="submit"
+                    className="w-full h-12 text-lg font-medium gap-2 shadow-md hover:shadow-xl transition-all active:scale-[0.98]"
+                  >
+                    Tạo lộ trình ngay <ArrowRight className="w-5 h-5" />
                   </Button>
                 </div>
               </form>
             </Card>
           ) : (
-            <Card variant="bordered" className="text-center py-16">
-              <Loader2 className="w-12 h-12 text-[var(--color-accent)] mx-auto mb-6 animate-spin"/>
-              <h1>Đang tạo lịch tập</h1>
-              <p>AI đang xây dựng lịch tập...</p>
+            <Card
+              variant="bordered"
+              className="text-center py-20 px-8 border-dashed border-2"
+            >
+              <div className="relative flex justify-center mb-8">
+                <div className="absolute inset-0 bg-[var(--color-accent)] blur-2xl opacity-20 animate-pulse rounded-full" />
+                <Loader2 className="w-16 h-16 text-[var(--color-accent)] animate-spin relative z-10" />
+              </div>
+              <h1 className="text-2xl font-bold mb-3">
+                Đang phân tích dữ liệu
+              </h1>
+              <p className="text-[var(--color-muted)] max-w-xs mx-auto">
+                AI đang tính toán các bài tập phù hợp nhất với thể trạng và mục
+                tiêu của bạn...
+              </p>
             </Card>
           )}
         </div>
