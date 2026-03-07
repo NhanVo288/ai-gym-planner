@@ -99,7 +99,7 @@ export default function Profile() {
           </Card>
         </div>
 
-        {/* Ghi chú chương trình */}
+        
         <Card variant="bordered" className="mb-8">
           <h2 className="font-semibold text-lg mb-2">Ghi chú chương trình</h2>
           <p className="text-[var(--color-muted)] text-sm leading-relaxed">
@@ -107,7 +107,7 @@ export default function Profile() {
           </p>
         </Card>
 
-        {/* Lịch tập tuần */}
+        
         <h2 className="font-semibold text-xl mb-4">Lịch tập trong tuần</h2>
         <PlanDisplay weeklySchedule={plan.weeklySchedule} />
 
