@@ -16,7 +16,9 @@ app.use(express.json())
 
 app.use("/api/profile", profileRoute)
 app.use("/api/plan", planRoute)
-
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
 })
