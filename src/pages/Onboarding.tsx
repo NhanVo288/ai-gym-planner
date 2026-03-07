@@ -118,7 +118,6 @@ const splitOptions = [
 export default function Onboarding() {
   const { user, saveProfile, generatePlan } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     goal: "gain_muscle",
@@ -149,7 +148,7 @@ export default function Onboarding() {
       await generatePlan();
       navigate("/profile");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save profile");
+      console.error(err);
     } finally {
       setIsGenerating(false);
     }
